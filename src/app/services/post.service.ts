@@ -38,9 +38,10 @@ export class PostService {
             return posts.map((post: Post) => {
               return {
                 ...post,
-                categoryName: categories.find(
-                  (category: Category) => category.id === post.categoryId
-                )?.title,
+                categoryName:
+                  categories.find(
+                    (category: Category) => category.id === post.categoryId
+                  )?.title || 'Others',
               };
             });
           })
