@@ -1,4 +1,14 @@
 <h1 class="text-center">Posts</h1>
+<select class="form-select my-4" (change)="onCategoryChange($event)">
+  <option value="">Select Category</option>
+  <option
+    value="{{ category.id }}"
+    *ngFor="let category of categories$ | async"
+  >
+    {{ category.title }}
+  </option>
+  <option value="other">Others</option>
+</select>
 <ng-container *ngIf="posts$ | async as posts; else loader">
   <table *ngIf="posts.length" class="table table-striped text-center">
     <thead>
@@ -18,7 +28,7 @@
       </tr>
     </tbody>
   </table>
-  <h2 *ngIf="!posts.length" class="text-center">No data present. 😞</h2>
+  <h2 *ngIf="!posts.length" class="text-center my-4">No data present. 😞</h2>
 </ng-container>
 <ng-template #loader>
   <div class="overlay">

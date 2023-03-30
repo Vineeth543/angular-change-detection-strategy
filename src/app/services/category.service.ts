@@ -9,19 +9,17 @@ import { HttpClient } from '@angular/common/http';
 export class CategoryService {
   constructor(private http: HttpClient) {}
 
-  getCategories() {
-    return this.http
-      .get<{ [id: string]: Category }>(
-        'https://rxjs-posts-default-rtdb.firebaseio.com/categories.json'
-      )
-      .pipe(
-        map((response: { [id: string]: Category }) => {
-          const categories: Category[] = [];
-          for (const id in response) {
-            categories.push({ ...response[id], id });
-          }
-          return categories;
-        })
-      );
-  }
+  categories$ = this.http
+    .get<{ [id: string]: Category }>(
+      'https://rxjs-posts-default-rtdb.firebaseio.com/categories.json'
+    )
+    .pipe(
+      map((response: { [id: string]: Category }) => {
+        const categories: Category[] = [];
+        for (const id in response) {
+          categories.push({ ...response[id], id });
+        }
+        return categories;
+      })
+    );
 }

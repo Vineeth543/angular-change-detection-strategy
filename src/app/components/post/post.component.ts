@@ -1,4 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
+import { Post } from 'src/app/models/post';
+import { CategoryService } from 'src/app/services/category.service';
 import { PostService } from 'src/app/services/post.service';
 
 @Component({
@@ -8,7 +11,34 @@ import { PostService } from 'src/app/services/post.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PostComponent {
-  constructor(private postService: PostService) {}
+  selectedCategoryId: string = '';
+  selectedCategorySubject = new BehaviorSubject<string>('');
+  selectedCategoryAction$ = this.selectedCategorySubject.asObservable();
 
-  posts$ = this.postService.getPostWithCategory();
+  constructor(
+    private postService: PostService,
+    private categoryService: CategoryService
+  ) {}
+
+  categories$ = this.categoryService.categories$;
+
+  posts$ = combineLatest([
+    this.postService.postsWithCategory$,
+    this.selectedCategoryAction$,
+  ]).pipe(
+    map(([posts, selectedCategoryId]) => {
+      return posts.filter((post: Post) =>
+        selectedCategoryId === 'other'
+          ? post.categoryName === 'Others'
+          : selectedCategoryId
+          ? post.categoryId === selectedCategoryId
+          : true
+      );
+    })
+  );
+
+  onCategoryChange(event: Event) {
+    this.selectedCategoryId = (event.target as HTMLSelectElement).value;
+    this.selectedCategorySubject.next(this.selectedCategoryId);
+  }
 }
