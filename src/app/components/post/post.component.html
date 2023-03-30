@@ -1,0 +1,22 @@
+<h1 class="text-center">Posts</h1>
+<ng-container *ngIf="posts$ | async as posts">
+  <table *ngIf="posts.length" class="table table-striped text-center">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Category</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let post of posts">
+        <td>{{ post.id }}</td>
+        <td>{{ post.title }}</td>
+        <td>{{ post.description }}</td>
+        <td>{{ post.categoryName }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <h2 *ngIf="!posts.length" class="text-center">No data present. 😞</h2>
+</ng-container>
