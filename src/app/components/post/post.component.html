@@ -1,5 +1,5 @@
 <h1 class="text-center">Posts</h1>
-<ng-container *ngIf="posts$ | async as posts">
+<ng-container *ngIf="posts$ | async as posts; else loader">
   <table *ngIf="posts.length" class="table table-striped text-center">
     <thead>
       <tr>
@@ -20,3 +20,24 @@
   </table>
   <h2 *ngIf="!posts.length" class="text-center">No data present. 😞</h2>
 </ng-container>
+<ng-template #loader>
+  <div class="overlay">
+    <div class="loading-spinner">
+      <div class="lds-spinner">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div>Loading...</div>
+    </div>
+  </div>
+</ng-template>
