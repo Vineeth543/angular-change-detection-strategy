@@ -1,4 +1,4 @@
-import { map } from 'rxjs';
+import { map, share, shareReplay } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Category } from '../models/category';
 import { HttpClient } from '@angular/common/http';
@@ -19,7 +19,9 @@ export class CategoryService {
         for (const id in response) {
           categories.push({ ...response[id], id });
         }
+        console.log('categories', categories);
         return categories;
-      })
+      }),
+      shareReplay(1)
     );
 }

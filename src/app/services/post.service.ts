@@ -1,4 +1,12 @@
-import { Subject, catchError, combineLatest, map, throwError } from 'rxjs';
+import {
+  map,
+  share,
+  Subject,
+  catchError,
+  throwError,
+  shareReplay,
+  combineLatest,
+} from 'rxjs';
 import { Post } from '../models/post';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -28,7 +36,8 @@ export class PostService {
       }),
       catchError((error: Error) =>
         throwError(() => 'Posts Error. Error while fetching posts.')
-      )
+      ),
+      shareReplay(1)
     );
 
   postsWithCategory$ = combineLatest([

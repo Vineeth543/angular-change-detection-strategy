@@ -13,6 +13,8 @@ export class PostDataComponent {
 
   posts$ = this.postService.postsWithCategory$;
 
+  selectedPostId$ = this.postService.post$;
+
   onSelectPost(post: Post, event: Event) {
     event.preventDefault();
     this.postService.selectPost(post.id);
