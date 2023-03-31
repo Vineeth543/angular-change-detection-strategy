@@ -9,9 +9,18 @@ import { HomeComponent } from './components/home/home.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PostDataComponent } from './components/post-data/post-data.component';
 import { SinglePostComponent } from './components/single-post/single-post.component';
+import { LoaderComponent } from './components/loader/loader.component';
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, PostComponent, HomeComponent, PostDataComponent, SinglePostComponent],
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    PostComponent,
+    HomeComponent,
+    PostDataComponent,
+    SinglePostComponent,
+    LoaderComponent,
+  ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule],
   providers: [],
   bootstrap: [AppComponent],
