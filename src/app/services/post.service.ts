@@ -1,4 +1,4 @@
-import { combineLatest, map } from 'rxjs';
+import { Subject, catchError, combineLatest, map, throwError } from 'rxjs';
 import { Post } from '../models/post';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -25,7 +25,10 @@ export class PostService {
           posts.push({ ...response[id], id });
         }
         return posts;
-      })
+      }),
+      catchError((error: Error) =>
+        throwError(() => 'Posts Error. Error while fetching posts.')
+      )
     );
 
   postsWithCategory$ = combineLatest([
@@ -42,6 +45,28 @@ export class PostService {
             )?.title || 'Others',
         };
       });
-    })
+    }),
+    catchError((error: Error) =>
+      throwError(() => 'Category Error. Error while fetching categories.')
+    )
   );
+
+  private selectedPostSubject = new Subject<string>();
+  slectedPostAction$ = this.selectedPostSubject.asObservable();
+
+  post$ = combineLatest([
+    this.postsWithCategory$,
+    this.slectedPostAction$,
+  ]).pipe(
+    map(([posts, selectedPostId]) =>
+      posts.find((post: Post) => post.id === selectedPostId)
+    ),
+    catchError((error: Error) =>
+      throwError(() => 'Post Error. Error while fetching post.')
+    )
+  );
+
+  selectPost(postId: string) {
+    this.selectedPostSubject.next(postId);
+  }
 }

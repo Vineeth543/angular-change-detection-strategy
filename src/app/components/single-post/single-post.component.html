@@ -1,0 +1,10 @@
+<div class="alert alert-danger" *ngIf="errorMessageAction$ | async as errorMsg">
+  {{ errorMsg }}
+</div>
+
+<div *ngIf="post$ | async as post">
+  <h3>Id: {{ post.id }}</h3>
+  <h3>Title: {{ post.title }}</h3>
+  <h3>Description: {{ post.description }}</h3>
+  <h3>Category: {{ post.categoryName }}</h3>
+</div>

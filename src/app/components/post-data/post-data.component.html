@@ -1,0 +1,18 @@
+<h1 class="text-center">Post Details</h1>
+<div class="row">
+  <ul class="list-group col-md-4">
+    <ng-container *ngFor="let post of posts$ | async">
+      <a
+        href="#"
+        class="list-group-item list-group-item-action"
+        *ngIf="post.title"
+        (click)="onSelectPost(post, $event)"
+      >
+        {{ post.title | uppercase }} ({{ post.categoryName }})
+      </a>
+    </ng-container>
+  </ul>
+  <div class="col-md-8">
+    <app-single-post></app-single-post>
+  </div>
+</div>
