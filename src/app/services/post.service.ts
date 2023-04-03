@@ -1,11 +1,10 @@
 import {
   map,
-  share,
-  Subject,
   catchError,
   throwError,
   shareReplay,
   combineLatest,
+  BehaviorSubject,
 } from 'rxjs';
 import { Post } from '../models/post';
 import { Injectable } from '@angular/core';
@@ -60,7 +59,7 @@ export class PostService {
     )
   );
 
-  private selectedPostSubject = new Subject<string>();
+  private selectedPostSubject = new BehaviorSubject<string>('');
   slectedPostAction$ = this.selectedPostSubject.asObservable();
 
   post$ = combineLatest([

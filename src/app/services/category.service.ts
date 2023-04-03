@@ -19,7 +19,6 @@ export class CategoryService {
         for (const id in response) {
           categories.push({ ...response[id], id });
         }
-        console.log('categories', categories);
         return categories;
       }),
       shareReplay(1)
