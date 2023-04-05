@@ -1,4 +1,4 @@
-import { map, share, shareReplay } from 'rxjs';
+import { map, share } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Category } from '../models/category';
 import { HttpClient } from '@angular/common/http';
@@ -21,6 +21,6 @@ export class CategoryService {
         }
         return categories;
       }),
-      shareReplay(1)
+      share()
     );
 }

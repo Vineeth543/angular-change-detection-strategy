@@ -27,6 +27,7 @@ export class PostDataComponent {
 
   onSelectPost(post: Post, event: Event) {
     event.preventDefault();
+    this.showAddPost = false;
     this.postService.selectPost(post.id);
   }
 

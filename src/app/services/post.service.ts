@@ -2,6 +2,7 @@ import {
   of,
   map,
   scan,
+  share,
   merge,
   Subject,
   concatMap,
@@ -41,7 +42,7 @@ export class PostService {
       catchError((error: Error) =>
         throwError(() => 'Posts Error. Error while fetching posts.')
       ),
-      shareReplay(1)
+      share()
     );
 
   postsWithCategory$ = combineLatest([
@@ -52,10 +53,9 @@ export class PostService {
       return posts.map((post: Post) => {
         return {
           ...post,
-          categoryName:
-            categories.find(
-              (category: Category) => category.id === post.categoryId
-            )?.title,
+          categoryName: categories.find(
+            (category: Category) => category.id === post.categoryId
+          )?.title,
         };
       });
     }),
@@ -79,7 +79,8 @@ export class PostService {
   ).pipe(
     scan((posts, value) => {
       return this.modifyPosts(posts, value);
-    }, [] as Post[])
+    }, [] as Post[]),
+    shareReplay(1)
   );
 
   modifyPosts(posts: Post[], value: Post[] | CRUDAction<Post>) {
@@ -95,7 +96,18 @@ export class PostService {
 
   savePost(postAction: CRUDAction<Post>) {
     if (postAction.action === 'add') {
-      return this.addPostToServer(postAction.data);
+      return this.addPostToServer(postAction.data).pipe(
+        concatMap((post) =>
+          this.categoryService.categories$.pipe(
+            map((categories) => ({
+              ...post,
+              categoryName: categories.find(
+                (category) => category.id === post.categoryId
+              )?.title,
+            }))
+          )
+        )
+      );
     }
     return of(postAction.data);
   }
@@ -120,10 +132,7 @@ export class PostService {
   private selectedPostSubject = new BehaviorSubject<string>('');
   slectedPostAction$ = this.selectedPostSubject.asObservable();
 
-  post$ = combineLatest([
-    this.postsWithCategory$,
-    this.slectedPostAction$,
-  ]).pipe(
+  post$ = combineLatest([this.allPosts$, this.slectedPostAction$]).pipe(
     map(([posts, selectedPostId]) =>
       posts.find((post: Post) => post.id === selectedPostId)
     ),

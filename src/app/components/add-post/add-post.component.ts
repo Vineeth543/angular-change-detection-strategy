@@ -36,6 +36,7 @@ export class AddPostComponent {
   onAddPost(): void {
     if (!this.addPostForm.valid) return;
     this.postService.addPost(this.addPostForm.value);
+    this.addPostForm.reset();
   }
 
   showFormErrors(field: string): string | void {
