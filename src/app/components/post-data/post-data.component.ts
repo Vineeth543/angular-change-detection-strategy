@@ -13,7 +13,7 @@ export class PostDataComponent {
   showAddPost!: boolean;
   constructor(private postService: PostService) {}
 
-  posts$ = this.postService.postsWithCategory$.pipe(
+  posts$ = this.postService.allPosts$.pipe(
     tap((posts) => this.postService.selectPost(posts[0].id))
   );
 

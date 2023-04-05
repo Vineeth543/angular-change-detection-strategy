@@ -1,12 +1,15 @@
 import {
   map,
+  scan,
+  merge,
+  Subject,
   catchError,
   throwError,
   shareReplay,
   combineLatest,
   BehaviorSubject,
 } from 'rxjs';
-import { Post } from '../models/post';
+import { Post, CRUDAction } from '../models/post';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Category } from '../models/category';
@@ -58,6 +61,18 @@ export class PostService {
       throwError(() => 'Category Error. Error while fetching categories.')
     )
   );
+
+  private postCRUDSubject = new Subject<CRUDAction<Post>>();
+  postCRUDAction$ = this.postCRUDSubject.asObservable();
+
+  allPosts$ = merge(
+    this.postsWithCategory$,
+    this.postCRUDAction$.pipe(map((data) => [data.data]))
+  ).pipe(scan((posts, value) => [...posts, ...value]));
+
+  addPost(post: Post) {
+    this.postCRUDSubject.next({ action: 'add', data: post });
+  }
 
   private selectedPostSubject = new BehaviorSubject<string>('');
   slectedPostAction$ = this.selectedPostSubject.asObservable();

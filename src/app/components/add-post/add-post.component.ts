@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { CategoryService } from 'src/app/services/category.service';
+import { PostService } from 'src/app/services/post.service';
 
 @Component({
   selector: 'app-add-post',
@@ -11,7 +12,10 @@ import { CategoryService } from 'src/app/services/category.service';
 export class AddPostComponent {
   addPostForm!: FormGroup;
 
-  constructor(private categoryService: CategoryService) {}
+  constructor(
+    private categoryService: CategoryService,
+    private postService: PostService
+  ) {}
 
   categories$ = this.categoryService.categories$;
 
@@ -31,6 +35,7 @@ export class AddPostComponent {
 
   onAddPost(): void {
     if (!this.addPostForm.valid) return;
+    this.postService.addPost(this.addPostForm.value);
   }
 
   showFormErrors(field: string): string | void {
