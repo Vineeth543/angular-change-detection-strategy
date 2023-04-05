@@ -11,6 +11,12 @@ const routes: Routes = [
   { path: 'post-data', component: PostDataComponent },
 ];
 
+export const routingComponents = [
+  HomeComponent,
+  PostComponent,
+  PostDataComponent,
+];
+
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],

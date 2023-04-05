@@ -1,0 +1,33 @@
+<h3>Add Post</h3>
+<hr />
+<form [formGroup]="addPostForm" (ngSubmit)="onAddPost()">
+  <label class="my-2">Title</label>
+  <input type="text" class="form-control" formControlName="title" />
+  <div *ngIf="showFormErrors('title')" class="alert alert-danger p-1 mt-2">
+    {{ showFormErrors("title") }}
+  </div>
+  <label class="my-2">Description</label>
+  <textarea class="form-control" formControlName="description"></textarea>
+  <div
+    *ngIf="showFormErrors('description')"
+    class="alert alert-danger p-1 mt-2"
+  >
+    {{ showFormErrors("description") }}
+  </div>
+  <label class="my-2">Category</label>
+  <select class="form-select" formControlName="category">
+    <option [ngValue]="null" selected disabled>Select Category</option>
+    <option [value]="category.id" *ngFor="let category of categories$ | async">
+      {{ category.title }}
+    </option>
+  </select>
+  <div *ngIf="showFormErrors('category')" class="alert alert-danger p-1 mt-2">
+    {{ showFormErrors("category") }}
+  </div>
+  <div class="d-flex gap-4 mt-4">
+    <button class="btn btn-info" [disabled]="!addPostForm.valid">
+      Add Post ✔
+    </button>
+    <button class="btn btn-danger">Cancel ❌</button>
+  </div>
+</form>

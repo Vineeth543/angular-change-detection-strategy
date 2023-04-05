@@ -1,5 +1,6 @@
 <h1 class="text-center">Post Details</h1>
-<div class="row">
+<button class="btn btn-primary" (click)="onAddPost()">New</button>
+<div class="d-flex gap-5 mt-3">
   <ul class="list-group col-md-4" *ngIf="viewModel$ | async as vm">
     <ng-container *ngFor="let post of vm.posts">
       <a
@@ -14,6 +15,7 @@
     </ng-container>
   </ul>
   <div class="col-md-8">
-    <app-single-post></app-single-post>
+    <app-single-post *ngIf="!showAddPost"></app-single-post>
+    <app-add-post *ngIf="showAddPost"></app-add-post>
   </div>
 </div>

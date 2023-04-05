@@ -10,6 +10,7 @@ import { PostService } from 'src/app/services/post.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PostDataComponent {
+  showAddPost!: boolean;
   constructor(private postService: PostService) {}
 
   posts$ = this.postService.postsWithCategory$.pipe(
@@ -27,5 +28,9 @@ export class PostDataComponent {
   onSelectPost(post: Post, event: Event) {
     event.preventDefault();
     this.postService.selectPost(post.id);
+  }
+
+  onAddPost() {
+    this.showAddPost = true;
   }
 }
