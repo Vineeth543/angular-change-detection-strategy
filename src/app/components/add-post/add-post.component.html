@@ -15,14 +15,14 @@
     {{ showFormErrors("description") }}
   </div>
   <label class="my-2">Category</label>
-  <select class="form-select" formControlName="category">
+  <select class="form-select" formControlName="categoryId">
     <option [ngValue]="null" selected disabled>Select Category</option>
     <option [value]="category.id" *ngFor="let category of categories$ | async">
       {{ category.title }}
     </option>
   </select>
-  <div *ngIf="showFormErrors('category')" class="alert alert-danger p-1 mt-2">
-    {{ showFormErrors("category") }}
+  <div *ngIf="showFormErrors('categoryId')" class="alert alert-danger p-1 mt-2">
+    {{ showFormErrors("categoryId") }}
   </div>
   <div class="d-flex gap-4 mt-4">
     <button class="btn btn-info" [disabled]="!addPostForm.valid">

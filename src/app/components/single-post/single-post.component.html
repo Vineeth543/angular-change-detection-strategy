@@ -1,10 +1,13 @@
 <div class="alert alert-danger" *ngIf="errorMessageAction$ | async as errorMsg">
   {{ errorMsg }}
 </div>
-
-<div *ngIf="post$ | async as post">
-  <h3>Id: {{ post.id }}</h3>
-  <h3>Title: {{ post.title }}</h3>
-  <h3>Description: {{ post.description }}</h3>
-  <h3>Category: {{ post.categoryName }}</h3>
+<div class="card border-primary text-center w-50" *ngIf="post$ | async as post">
+  <div class="card-header">{{ post.id.slice(1) | uppercase }}</div>
+  <div class="card-body text-primary">
+    <h5 class="card-title">{{ post.title }}</h5>
+    <p class="card-text">{{ post.description }}</p>
+  </div>
+  <div class="card-footer border-primary">
+    {{ post.categoryName }}
+  </div>
 </div>

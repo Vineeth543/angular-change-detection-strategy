@@ -29,7 +29,7 @@ export class AddPostComponent {
         Validators.required,
         Validators.minLength(10),
       ]),
-      category: new FormControl(null, [Validators.required]),
+      categoryId: new FormControl(null, [Validators.required]),
     });
   }
 

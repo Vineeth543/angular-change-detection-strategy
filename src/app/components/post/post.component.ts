@@ -31,11 +31,7 @@ export class PostComponent {
     map(([posts, selectedCategoryId]) => {
       this.loaderService.hideLoader();
       return posts.filter((post: Post) =>
-        selectedCategoryId === 'other'
-          ? post.categoryName === 'Others'
-          : selectedCategoryId
-          ? post.categoryId === selectedCategoryId
-          : true
+        selectedCategoryId ? post.categoryId === selectedCategoryId : true
       );
     })
   );

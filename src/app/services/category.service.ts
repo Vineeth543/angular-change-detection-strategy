@@ -11,7 +11,7 @@ export class CategoryService {
 
   categories$ = this.http
     .get<{ [id: string]: Category }>(
-      'https://rxjs-posts-default-rtdb.firebaseio.com/categories.json'
+      'https://angular-rxjs-project-default-rtdb.firebaseio.com/categories.json'
     )
     .pipe(
       map((response: { [id: string]: Category }) => {

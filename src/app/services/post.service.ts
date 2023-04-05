@@ -1,8 +1,10 @@
 import {
+  of,
   map,
   scan,
   merge,
   Subject,
+  concatMap,
   catchError,
   throwError,
   shareReplay,
@@ -26,7 +28,7 @@ export class PostService {
 
   posts$ = this.http
     .get<{ [id: string]: Post }>(
-      'https://rxjs-posts-default-rtdb.firebaseio.com/posts.json'
+      'https://angular-rxjs-project-default-rtdb.firebaseio.com/posts.json'
     )
     .pipe(
       map((response: { [id: string]: Post }) => {
@@ -53,7 +55,7 @@ export class PostService {
           categoryName:
             categories.find(
               (category: Category) => category.id === post.categoryId
-            )?.title || 'Others',
+            )?.title,
         };
       });
     }),
@@ -67,8 +69,49 @@ export class PostService {
 
   allPosts$ = merge(
     this.postsWithCategory$,
-    this.postCRUDAction$.pipe(map((data) => [data.data]))
-  ).pipe(scan((posts, value) => [...posts, ...value]));
+    this.postCRUDAction$.pipe(
+      concatMap((postAction) =>
+        this.savePost(postAction).pipe(
+          map((post) => ({ ...postAction, data: post }))
+        )
+      )
+    )
+  ).pipe(
+    scan((posts, value) => {
+      return this.modifyPosts(posts, value);
+    }, [] as Post[])
+  );
+
+  modifyPosts(posts: Post[], value: Post[] | CRUDAction<Post>) {
+    if (!(value instanceof Array)) {
+      if (value.action === 'add') {
+        return [...posts, value.data];
+      }
+    } else {
+      return value;
+    }
+    return posts;
+  }
+
+  savePost(postAction: CRUDAction<Post>) {
+    if (postAction.action === 'add') {
+      return this.addPostToServer(postAction.data);
+    }
+    return of(postAction.data);
+  }
+
+  addPostToServer(post: Post) {
+    return this.http
+      .post<{ name: string }>(
+        `https://angular-rxjs-project-default-rtdb.firebaseio.com/posts.json`,
+        post
+      )
+      .pipe(
+        map((id) => {
+          return { ...post, id: id.name };
+        })
+      );
+  }
 
   addPost(post: Post) {
     this.postCRUDSubject.next({ action: 'add', data: post });

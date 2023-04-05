@@ -3,7 +3,7 @@ export interface Post {
   title: string;
   categoryId: string;
   description: string;
-  categoryName: string;
+  categoryName?: string;
 }
 
 export interface CRUDAction<T> {
