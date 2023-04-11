@@ -1,13 +1,9 @@
 <h1 class="text-center">Posts</h1>
 <select class="form-select my-4" (change)="onCategoryChange($event)">
-  <option value="">Select Category</option>
-  <option
-    value="{{ category.id }}"
-    *ngFor="let category of categories$ | async"
-  >
+  <option [ngValue]="null" selected disabled>Select Category</option>
+  <option [value]="category.id" *ngFor="let category of categories$ | async">
     {{ category.title }}
   </option>
-  <option value="other">Others</option>
 </select>
 <ng-container *ngIf="posts$ | async as posts">
   <table *ngIf="posts.length" class="table table-striped text-center">

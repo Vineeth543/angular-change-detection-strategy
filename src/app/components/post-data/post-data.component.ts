@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { combineLatest, map, tap } from 'rxjs';
 import { Post } from 'src/app/models/post';
+import { LoaderService } from 'src/app/services/loader.service';
 import { PostService } from 'src/app/services/post.service';
 
 @Component({
@@ -10,8 +11,14 @@ import { PostService } from 'src/app/services/post.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PostDataComponent {
-  showAddPost!: boolean;
-  constructor(private postService: PostService) {}
+  showAddPost: boolean = false;
+
+  constructor(
+    private postService: PostService,
+    private loaderService: LoaderService
+  ) {
+    this.loaderService.showLoader();
+  }
 
   posts$ = this.postService.allPosts$.pipe(
     tap((posts) => this.postService.selectPost(posts[0].id))
@@ -21,6 +28,7 @@ export class PostDataComponent {
 
   viewModel$ = combineLatest([this.posts$, this.selectedPostId$]).pipe(
     map(([posts, selectedPost]) => {
+      this.loaderService.hideLoader();
       return { posts, selectedPost };
     })
   );
@@ -33,5 +41,9 @@ export class PostDataComponent {
 
   onAddPost() {
     this.showAddPost = true;
+  }
+
+  onCancelAddPost() {
+    this.showAddPost = false;
   }
 }

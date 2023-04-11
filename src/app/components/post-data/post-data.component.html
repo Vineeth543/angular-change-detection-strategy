@@ -16,6 +16,9 @@
   </ul>
   <div class="col-md-8">
     <app-single-post *ngIf="!showAddPost"></app-single-post>
-    <app-add-post *ngIf="showAddPost"></app-add-post>
+    <app-add-post
+      *ngIf="showAddPost"
+      (cancelAddPost)="onCancelAddPost()"
+    ></app-add-post>
   </div>
 </div>

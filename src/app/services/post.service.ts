@@ -8,7 +8,6 @@ import {
   concatMap,
   catchError,
   throwError,
-  shareReplay,
   combineLatest,
   BehaviorSubject,
 } from 'rxjs';
@@ -49,19 +48,18 @@ export class PostService {
     this.posts$,
     this.categoryService.categories$,
   ]).pipe(
-    map(([posts, categories]) => {
-      return posts.map((post: Post) => {
-        return {
-          ...post,
-          categoryName: categories.find(
-            (category: Category) => category.id === post.categoryId
-          )?.title,
-        };
-      });
-    }),
+    map(([posts, categories]) =>
+      posts.map((post: Post) => ({
+        ...post,
+        categoryName: categories.find(
+          (category: Category) => category.id === post.categoryId
+        )?.title,
+      }))
+    ),
     catchError((error: Error) =>
       throwError(() => 'Category Error. Error while fetching categories.')
-    )
+    ),
+    share()
   );
 
   private postCRUDSubject = new Subject<CRUDAction<Post>>();
@@ -80,7 +78,7 @@ export class PostService {
     scan((posts, value) => {
       return this.modifyPosts(posts, value);
     }, [] as Post[]),
-    shareReplay(1)
+    share()
   );
 
   modifyPosts(posts: Post[], value: Post[] | CRUDAction<Post>) {
@@ -118,11 +116,7 @@ export class PostService {
         `https://angular-rxjs-project-default-rtdb.firebaseio.com/posts.json`,
         post
       )
-      .pipe(
-        map((id) => {
-          return { ...post, id: id.name };
-        })
-      );
+      .pipe(map((id) => ({ ...post, id: id.name })));
   }
 
   addPost(post: Post) {
@@ -138,7 +132,8 @@ export class PostService {
     ),
     catchError((error: Error) =>
       throwError(() => 'Post Error. Error while fetching post.')
-    )
+    ),
+    share()
   );
 
   selectPost(postId: string) {

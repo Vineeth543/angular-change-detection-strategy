@@ -1,4 +1,9 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Output,
+  Component,
+  EventEmitter,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { CategoryService } from 'src/app/services/category.service';
 import { PostService } from 'src/app/services/post.service';
@@ -11,6 +16,8 @@ import { PostService } from 'src/app/services/post.service';
 })
 export class AddPostComponent {
   addPostForm!: FormGroup;
+
+  @Output() cancelAddPost = new EventEmitter<void>();
 
   constructor(
     private categoryService: CategoryService,
@@ -43,6 +50,9 @@ export class AddPostComponent {
     const targetField = this.addPostForm.get(field);
     if (targetField?.touched && !targetField.valid) {
       if (targetField.errors?.['required']) {
+        if (field === 'categoryId') {
+          return 'Category is required';
+        }
         return field[0].toUpperCase() + field.slice(1) + ' is required';
       }
       if (targetField.errors?.['minlength'] && field === 'title') {
@@ -52,5 +62,9 @@ export class AddPostComponent {
         return 'Description must atleast have 10 characters';
       }
     }
+  }
+
+  onCancelAddPost(): void {
+    this.cancelAddPost.emit();
   }
 }

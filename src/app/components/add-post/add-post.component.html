@@ -28,6 +28,8 @@
     <button class="btn btn-info" [disabled]="!addPostForm.valid">
       Add Post ✔
     </button>
-    <button class="btn btn-danger">Cancel ❌</button>
+    <button type="button" class="btn btn-danger" (click)="onCancelAddPost()">
+      Cancel ❌
+    </button>
   </div>
 </form>

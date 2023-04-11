@@ -20,7 +20,9 @@ export class PostComponent {
     private postService: PostService,
     private categoryService: CategoryService,
     private loaderService: LoaderService
-  ) {}
+  ) {
+    this.loaderService.showLoader();
+  }
 
   categories$ = this.categoryService.categories$;
 
@@ -35,10 +37,6 @@ export class PostComponent {
       );
     })
   );
-
-  ngOnInit(): void {
-    this.loaderService.showLoader();
-  }
 
   onCategoryChange(event: Event) {
     this.selectedCategoryId = (event.target as HTMLSelectElement).value;
