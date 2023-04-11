@@ -1,0 +1,47 @@
+<h3 class="mt-2">Update Post</h3>
+<hr />
+<ng-container *ngIf="post$ | async">
+  <form [formGroup]="editPostForm" (ngSubmit)="onUpdatePost()">
+    <label class="my-2">Title</label>
+    <input type="text" class="form-control" formControlName="title" />
+    <div *ngIf="showFormErrors('title')" class="alert alert-danger p-1 mt-2">
+      {{ showFormErrors("title") }}
+    </div>
+    <label class="my-2">Description</label>
+    <textarea class="form-control" formControlName="description"></textarea>
+    <div
+      *ngIf="showFormErrors('description')"
+      class="alert alert-danger p-1 mt-2"
+    >
+      {{ showFormErrors("description") }}
+    </div>
+    <label class="my-2">Category</label>
+    <select class="form-select" formControlName="categoryId">
+      <option [ngValue]="null" selected disabled>Select Category</option>
+      <option
+        [value]="category.id"
+        *ngFor="let category of categories$ | async"
+      >
+        {{ category.title }}
+      </option>
+    </select>
+    <div
+      *ngIf="showFormErrors('categoryId')"
+      class="alert alert-danger p-1 mt-2"
+    >
+      {{ showFormErrors("categoryId") }}
+    </div>
+    <div class="d-flex gap-4 mt-4">
+      <button class="btn btn-info" [disabled]="!editPostForm.valid">
+        Save ✔
+      </button>
+      <button
+        type="button"
+        class="btn btn-danger"
+        (click)="onCancelUpdatePost()"
+      >
+        Cancel ❌
+      </button>
+    </div>
+  </form>
+</ng-container>

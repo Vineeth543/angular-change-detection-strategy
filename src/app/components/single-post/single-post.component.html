@@ -9,5 +9,10 @@
   </div>
   <div class="card-footer border-primary">
     {{ post.categoryName }}
+    <div class="d-flex gap-3 justify-content-center my-2">
+      <button class="btn btn-primary" (click)="onUpdatePost()">Update</button>
+      <button class="btn btn-danger">Delete</button>
+    </div>
   </div>
 </div>
+<app-update-post *ngIf="showUpdatePost"></app-update-post>

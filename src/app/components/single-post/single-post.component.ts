@@ -9,9 +9,10 @@ import { PostService } from 'src/app/services/post.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SinglePostComponent {
+  showUpdatePost: boolean = false;
   errorMessageSubject = new Subject<string>();
   errorMessageAction$ = this.errorMessageSubject.asObservable();
-  
+
   constructor(private postService: PostService) {}
 
   post$ = this.postService.post$.pipe(
@@ -20,4 +21,8 @@ export class SinglePostComponent {
       return EMPTY;
     })
   );
+
+  onUpdatePost() {
+    this.showUpdatePost = true;
+  }
 }

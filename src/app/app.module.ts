@@ -9,6 +9,7 @@ import { SinglePostComponent } from './components/single-post/single-post.compon
 import { LoaderComponent } from './components/loader/loader.component';
 import { AddPostComponent } from './components/add-post/add-post.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UpdatePostComponent } from './components/update-post/update-post.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     LoaderComponent,
     AddPostComponent,
     routingComponents,
+    UpdatePostComponent,
   ],
   imports: [
     BrowserModule,
