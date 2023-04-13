@@ -92,6 +92,9 @@ export class PostService {
           post.id === value.data.id ? value.data : post
         );
       }
+      if (value.action === 'delete') {
+        return posts.filter((post) => post.id !== value.data.id);
+      }
     } else {
       return value;
     }
@@ -100,15 +103,17 @@ export class PostService {
 
   savePost(postAction: CRUDAction<Post>) {
     let postDetails$!: Observable<Post>;
-
     if (postAction.action === 'add') {
       postDetails$ = this.addPostToServer(postAction.data);
     }
-
     if (postAction.action === 'update') {
       postDetails$ = this.updatePostToServer(postAction.data);
     }
-
+    if (postAction.action === 'delete') {
+      return this.deletePostFromServer(postAction.data).pipe(
+        map(() => postAction.data)
+      );
+    }
     return postDetails$.pipe(
       concatMap((post) =>
         this.categoryService.categories$.pipe(
@@ -139,12 +144,22 @@ export class PostService {
     );
   }
 
+  deletePostFromServer(post: Post) {
+    return this.http.delete(
+      `https://angular-rxjs-project-default-rtdb.firebaseio.com/posts/${post.id}.json`
+    );
+  }
+
   addPost(post: Post) {
     this.postCRUDSubject.next({ action: 'add', data: post });
   }
 
   updatePost(post: Post) {
     this.postCRUDSubject.next({ action: 'update', data: post });
+  }
+
+  deletePost(post: Post) {
+    this.postCRUDSubject.next({ action: 'delete', data: post });
   }
 
   private selectedPostSubject = new BehaviorSubject<string>('');

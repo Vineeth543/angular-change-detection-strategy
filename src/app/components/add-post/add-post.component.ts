@@ -1,4 +1,5 @@
 import {
+  OnInit,
   Output,
   Component,
   EventEmitter,
@@ -14,7 +15,7 @@ import { PostService } from 'src/app/services/post.service';
   styleUrls: ['./add-post.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddPostComponent {
+export class AddPostComponent implements OnInit {
   addPostForm!: FormGroup;
 
   @Output() cancelAddPost = new EventEmitter<void>();

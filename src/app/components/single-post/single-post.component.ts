@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { EMPTY, Subject, catchError } from 'rxjs';
+import { Post } from 'src/app/models/post';
 import { PostService } from 'src/app/services/post.service';
 
 @Component({
@@ -28,5 +29,11 @@ export class SinglePostComponent {
 
   onCancelUpdatePost() {
     this.showUpdatePost = false;
+  }
+
+  onDeletePost(post: Post) {
+    if (confirm(`Are you sure you want to delete this post..?`)) {
+      this.postService.deletePost(post);
+    }
   }
 }
