@@ -1,5 +1,14 @@
 <app-header></app-header>
 <app-loader *ngIf="loaderAction$ | async"></app-loader>
 <div class="container position-relative">
+  <div
+    *ngIf="successMessage$ | async as successMessage"
+    class="alert alert-success"
+  >
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage$ | async as errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
   <router-outlet></router-outlet>
 </div>

@@ -17,6 +17,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Category } from '../models/category';
 import { CategoryService } from './category.service';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,8 @@ import { CategoryService } from './category.service';
 export class PostService {
   constructor(
     private http: HttpClient,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private notificationService: NotificationService
   ) {}
 
   posts$ = this.http
@@ -104,13 +106,28 @@ export class PostService {
   savePost(postAction: CRUDAction<Post>) {
     let postDetails$!: Observable<Post>;
     if (postAction.action === 'add') {
-      postDetails$ = this.addPostToServer(postAction.data);
+      postDetails$ = this.addPostToServer(postAction.data).pipe(
+        tap(() =>
+          this.notificationService.setSuccessMessage('Post added successfully.')
+        )
+      );
     }
     if (postAction.action === 'update') {
-      postDetails$ = this.updatePostToServer(postAction.data);
+      postDetails$ = this.updatePostToServer(postAction.data).pipe(
+        tap(() =>
+          this.notificationService.setSuccessMessage(
+            'Post updated successfully.'
+          )
+        )
+      );
     }
     if (postAction.action === 'delete') {
       return this.deletePostFromServer(postAction.data).pipe(
+        tap(() =>
+          this.notificationService.setSuccessMessage(
+            'Post deleted successfully.'
+          )
+        ),
         map(() => postAction.data)
       );
     }
