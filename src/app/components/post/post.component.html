@@ -1,4 +1,10 @@
 <h1 class="text-center">Posts</h1>
+<button
+  class="btn btn-primary position-absolute top-0 end-0 mt-2"
+  routerLink="add"
+>
+  New
+</button>
 <select class="form-select my-4" (change)="onCategoryChange($event)">
   <option [ngValue]="null" selected disabled>Select Category</option>
   <option [value]="category.id" *ngFor="let category of categories$ | async">
@@ -13,6 +19,7 @@
         <th>Title</th>
         <th>Description</th>
         <th>Category</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -21,6 +28,11 @@
         <td>{{ post.title }}</td>
         <td>{{ post.description }}</td>
         <td>{{ post.categoryName }}</td>
+        <td>
+          <button class="btn btn-info" routerLink="edit/{{ post.id }}">
+            Update
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>
