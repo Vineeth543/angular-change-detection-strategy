@@ -15,4 +15,7 @@
     </div>
   </div>
 </div>
-<app-update-post *ngIf="showUpdatePost"></app-update-post>
+<app-update-post
+  *ngIf="showUpdatePost"
+  (cancelUpdatePost)="onCancelUpdatePost()"
+></app-update-post>

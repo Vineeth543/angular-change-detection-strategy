@@ -9,7 +9,7 @@ import { PostService } from 'src/app/services/post.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SinglePostComponent {
-  showUpdatePost: boolean = false;
+  showUpdatePost!: boolean;
   errorMessageSubject = new Subject<string>();
   errorMessageAction$ = this.errorMessageSubject.asObservable();
 
@@ -24,5 +24,9 @@ export class SinglePostComponent {
 
   onUpdatePost() {
     this.showUpdatePost = true;
+  }
+
+  onCancelUpdatePost() {
+    this.showUpdatePost = false;
   }
 }

@@ -1,15 +1,16 @@
 import {
-  of,
   map,
   scan,
   share,
   merge,
   Subject,
   concatMap,
+  Observable,
   catchError,
   throwError,
   combineLatest,
   BehaviorSubject,
+  tap,
 } from 'rxjs';
 import { Post, CRUDAction } from '../models/post';
 import { Injectable } from '@angular/core';
@@ -38,7 +39,7 @@ export class PostService {
         }
         return posts;
       }),
-      catchError((error: Error) =>
+      catchError(() =>
         throwError(() => 'Posts Error. Error while fetching posts.')
       ),
       share()
@@ -56,7 +57,7 @@ export class PostService {
         )?.title,
       }))
     ),
-    catchError((error: Error) =>
+    catchError(() =>
       throwError(() => 'Category Error. Error while fetching categories.')
     ),
     share()
@@ -86,6 +87,11 @@ export class PostService {
       if (value.action === 'add') {
         return [...posts, value.data];
       }
+      if (value.action === 'update') {
+        return posts.map((post) =>
+          post.id === value.data.id ? value.data : post
+        );
+      }
     } else {
       return value;
     }
@@ -93,21 +99,28 @@ export class PostService {
   }
 
   savePost(postAction: CRUDAction<Post>) {
+    let postDetails$!: Observable<Post>;
+
     if (postAction.action === 'add') {
-      return this.addPostToServer(postAction.data).pipe(
-        concatMap((post) =>
-          this.categoryService.categories$.pipe(
-            map((categories) => ({
-              ...post,
-              categoryName: categories.find(
-                (category) => category.id === post.categoryId
-              )?.title,
-            }))
-          )
-        )
-      );
+      postDetails$ = this.addPostToServer(postAction.data);
     }
-    return of(postAction.data);
+
+    if (postAction.action === 'update') {
+      postDetails$ = this.updatePostToServer(postAction.data);
+    }
+
+    return postDetails$.pipe(
+      concatMap((post) =>
+        this.categoryService.categories$.pipe(
+          map((categories) => ({
+            ...post,
+            categoryName: categories.find(
+              (category) => category.id === post.categoryId
+            )?.title,
+          }))
+        )
+      )
+    );
   }
 
   addPostToServer(post: Post) {
@@ -119,8 +132,19 @@ export class PostService {
       .pipe(map((id) => ({ ...post, id: id.name })));
   }
 
+  updatePostToServer(post: Post) {
+    return this.http.patch<Post>(
+      `https://angular-rxjs-project-default-rtdb.firebaseio.com/posts/${post.id}.json`,
+      post
+    );
+  }
+
   addPost(post: Post) {
     this.postCRUDSubject.next({ action: 'add', data: post });
+  }
+
+  updatePost(post: Post) {
+    this.postCRUDSubject.next({ action: 'update', data: post });
   }
 
   private selectedPostSubject = new BehaviorSubject<string>('');
@@ -130,7 +154,7 @@ export class PostService {
     map(([posts, selectedPostId]) =>
       posts.find((post: Post) => post.id === selectedPostId)
     ),
-    catchError((error: Error) =>
+    catchError(() =>
       throwError(() => 'Post Error. Error while fetching post.')
     ),
     share()
