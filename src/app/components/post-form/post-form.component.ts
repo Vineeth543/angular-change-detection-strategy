@@ -5,7 +5,7 @@ import { LoaderService } from 'src/app/services/loader.service';
 import { PostService } from 'src/app/services/post.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Post } from 'src/app/models/post';
-import { combineLatest, tap } from 'rxjs';
+import { combineLatest, startWith, tap } from 'rxjs';
 
 @Component({
   selector: 'app-post-form',
@@ -57,9 +57,16 @@ export class PostFormComponent {
 
   categories$ = this.categoryService.categories$;
 
-  viewModel$ = combineLatest([this.selectedPostId$, this.post$]).pipe(
-    tap(() => this.loaderService.hideLoader())
+  postActionComplete$ = this.postService.postCRUDCompleteAction$.pipe(
+    startWith(''),
+    tap((isComplete) => isComplete && this.router.navigateByUrl('/post'))
   );
+
+  viewModel$ = combineLatest([
+    this.selectedPostId$,
+    this.post$,
+    this.postActionComplete$,
+  ]).pipe(tap(() => this.loaderService.hideLoader()));
 
   showFormErrors(field: string): string | void {
     const targetField = this.postForm.get(field);

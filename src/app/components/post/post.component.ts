@@ -12,7 +12,7 @@ import { PostService } from 'src/app/services/post.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PostComponent {
-  selectedCategoryId: string = '';
+  selectedCategoryId!: string;
   selectedCategorySubject = new BehaviorSubject<string>('');
   selectedCategoryAction$ = this.selectedCategorySubject.asObservable();
 

@@ -3,11 +3,14 @@
 <div class="container position-relative">
   <div
     *ngIf="successMessage$ | async as successMessage"
-    class="alert alert-success"
+    class="alert alert-success z-1"
   >
     {{ successMessage }}
   </div>
-  <div *ngIf="errorMessage$ | async as errorMessage" class="alert alert-danger">
+  <div
+    *ngIf="errorMessage$ | async as errorMessage"
+    class="alert alert-danger z-1"
+  >
     {{ errorMessage }}
   </div>
   <router-outlet></router-outlet>

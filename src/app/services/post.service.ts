@@ -68,6 +68,9 @@ export class PostService {
   private postCRUDSubject = new Subject<CRUDAction<Post>>();
   postCRUDAction$ = this.postCRUDSubject.asObservable();
 
+  private postCRUDCompleteSubject = new Subject<boolean>();
+  postCRUDCompleteAction$ = this.postCRUDCompleteSubject.asObservable();
+
   allPosts$ = merge(
     this.postsWithCategory$,
     this.postCRUDAction$.pipe(
@@ -107,27 +110,32 @@ export class PostService {
     let postDetails$!: Observable<Post>;
     if (postAction.action === 'add') {
       postDetails$ = this.addPostToServer(postAction.data).pipe(
-        tap(() =>
-          this.notificationService.setSuccessMessage('Post added successfully.')
-        )
+        tap(() => {
+          this.notificationService.setSuccessMessage(
+            'Post added successfully.'
+          );
+          this.postCRUDCompleteSubject.next(true);
+        })
       );
     }
     if (postAction.action === 'update') {
       postDetails$ = this.updatePostToServer(postAction.data).pipe(
-        tap(() =>
+        tap(() => {
           this.notificationService.setSuccessMessage(
             'Post updated successfully.'
-          )
-        )
+          );
+          this.postCRUDCompleteSubject.next(true);
+        })
       );
     }
     if (postAction.action === 'delete') {
       return this.deletePostFromServer(postAction.data).pipe(
-        tap(() =>
+        tap(() => {
           this.notificationService.setSuccessMessage(
             'Post deleted successfully.'
-          )
-        ),
+          );
+          this.postCRUDCompleteSubject.next(true);
+        }),
         map(() => postAction.data)
       );
     }
