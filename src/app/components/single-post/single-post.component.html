@@ -1,6 +1,3 @@
-<div class="alert alert-danger" *ngIf="errorMessageAction$ | async as errorMsg">
-  {{ errorMsg }}
-</div>
 <div class="card border-primary text-center w-50" *ngIf="post$ | async as post">
   <div class="card-header">{{ post.id.slice(1) | uppercase }}</div>
   <div class="card-body text-primary">

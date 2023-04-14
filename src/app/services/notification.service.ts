@@ -13,11 +13,11 @@ export class NotificationService {
 
   setSuccessMessage(message: string): void {
     this.successMessageSubject.next(message);
-    setTimeout(() => this.successMessageSubject.next(''), 3000);
+    message && setTimeout(() => this.successMessageSubject.next(''), 3000);
   }
 
-  setErrorsMessage(message: string): void {
+  setErrorMessage(message: string): void {
     this.errorMessageSubject.next(message);
-    setTimeout(() => this.errorMessageSubject.next(''), 3000);
+    message && setTimeout(() => this.errorMessageSubject.next(''), 3000);
   }
 }

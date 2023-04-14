@@ -1,16 +1,16 @@
 import {
   map,
+  tap,
   scan,
   share,
   merge,
+  EMPTY,
   Subject,
   concatMap,
   Observable,
   catchError,
-  throwError,
   combineLatest,
   BehaviorSubject,
-  tap,
 } from 'rxjs';
 import { Post, CRUDAction } from '../models/post';
 import { Injectable } from '@angular/core';
@@ -18,6 +18,7 @@ import { HttpClient } from '@angular/common/http';
 import { Category } from '../models/category';
 import { CategoryService } from './category.service';
 import { NotificationService } from './notification.service';
+import { LoaderService } from './loader.service';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +26,7 @@ import { NotificationService } from './notification.service';
 export class PostService {
   constructor(
     private http: HttpClient,
+    private loaderService: LoaderService,
     private categoryService: CategoryService,
     private notificationService: NotificationService
   ) {}
@@ -41,9 +43,13 @@ export class PostService {
         }
         return posts;
       }),
-      catchError(() =>
-        throwError(() => 'Posts Error. Error while fetching posts.')
-      ),
+      catchError(() => {
+        this.loaderService.hideLoader();
+        this.notificationService.setErrorMessage(
+          'Posts Error. Error while fetching posts.'
+        );
+        return EMPTY;
+      }),
       share()
     );
 
@@ -59,9 +65,13 @@ export class PostService {
         )?.title,
       }))
     ),
-    catchError(() =>
-      throwError(() => 'Category Error. Error while fetching categories.')
-    ),
+    catchError(() => {
+      this.loaderService.hideLoader();
+      this.notificationService.setErrorMessage(
+        'Category Error. Error while fetching categories.'
+      );
+      return EMPTY;
+    }),
     share()
   );
 
@@ -115,6 +125,13 @@ export class PostService {
             'Post added successfully.'
           );
           this.postCRUDCompleteSubject.next(true);
+        }),
+        catchError(() => {
+          this.loaderService.hideLoader();
+          this.notificationService.setErrorMessage(
+            'Error while adding post. Please try again.'
+          );
+          return EMPTY;
         })
       );
     }
@@ -125,6 +142,13 @@ export class PostService {
             'Post updated successfully.'
           );
           this.postCRUDCompleteSubject.next(true);
+        }),
+        catchError(() => {
+          this.loaderService.hideLoader();
+          this.notificationService.setErrorMessage(
+            'Error while updating post. Please try again.'
+          );
+          return EMPTY;
         })
       );
     }
@@ -136,7 +160,14 @@ export class PostService {
           );
           this.postCRUDCompleteSubject.next(true);
         }),
-        map(() => postAction.data)
+        map(() => postAction.data),
+        catchError(() => {
+          this.loaderService.hideLoader();
+          this.notificationService.setErrorMessage(
+            'Error while deleting post. Please try again.'
+          );
+          return EMPTY;
+        })
       );
     }
     return postDetails$.pipe(
@@ -193,9 +224,6 @@ export class PostService {
   post$ = combineLatest([this.allPosts$, this.slectedPostAction$]).pipe(
     map(([posts, selectedPostId]) =>
       posts.find((post: Post) => post.id === selectedPostId)
-    ),
-    catchError(() =>
-      throwError(() => 'Post Error. Error while fetching post.')
     ),
     share()
   );
